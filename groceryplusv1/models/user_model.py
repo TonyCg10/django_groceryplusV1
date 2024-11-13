@@ -15,6 +15,7 @@ class User(Document):
             "_id": self._id,
             "name": self.name,
             "email": self.email,
+            "password": self.password,
             "phone": self.phone,
             "img": self.img if self.img else None,
             "stripeCustomerId": self.stripeCustomerId,

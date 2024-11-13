@@ -8,16 +8,6 @@ urlpatterns = [
         name="get_products",
     ),
     path(
-        "products/check-single/<str:id>",
-        product_views.get_one_product,
-        name="get_one_product",
-    ),
-    path(
-        "products/check-multiple/<str:ids>",
-        product_views.get_multiple_product,
-        name="get_multiple_product",
-    ),
-    path(
         "products/create-product", product_views.create_product, name="create_product"
     ),
     path(

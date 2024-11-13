@@ -8,55 +8,34 @@ from groceryplusv1.models.user_model import User
 @csrf_exempt
 def get_users(request):
     try:
-        users = User.objects.all()
+        filters = {}
+
+        for key, value in request.GET.items():
+            filters[key] = value
+
+        if filters:
+            users = User.objects.filter(**filters)
+        else:
+            users = User.objects.all()
+
         data = [user.serialize() for user in users]
 
-        print("#####" + str(data))
+        print(data)
+
+        if data == []:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "users": [],
+                    "message": "Users not found",
+                },
+                status=404,
+            )
 
         return JsonResponse(
-            {"success": True, "data": data, "message": "Users gotten"},
+            {"success": True, "users": data, "message": "Users retrieved"},
             status=200,
         )
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-
-@csrf_exempt
-def check_user(request):
-    try:
-        if request.method == "POST":
-            data = json.loads(request.body)
-            email = data.get("email")
-            password = data.get("password")
-            phone = data.get("phone")
-
-            query = {}
-
-            if email:
-                query["email"] = email
-
-            if password:
-                query["password"] = password
-
-            if phone:
-                query["phone"] = phone
-
-            user = User.objects.filter(**query).first()
-
-            print("#####" + str(user))
-
-            if user:
-                return JsonResponse(
-                    {"exists": True, "data": user.serialize(), "message": "Found"},
-                    status=200,
-                )
-            else:
-                return JsonResponse({"exists": False, "message": "Not Found"})
-
-        else:
-            return JsonResponse(
-                {"success": False, "error": "Invalid request method"}, status=400
-            )
 
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
@@ -91,15 +70,7 @@ def create_user(request):
             return JsonResponse(
                 {
                     "success": True,
-                    "data": {
-                        "_id": new_user_id,
-                        "name": name,
-                        "email": email,
-                        "password": password,
-                        "phone": phone,
-                        "stripeCustomerId": stripeCustomerId,
-                        "img": img if img else None,
-                    },
+                    "user": new_user.serialize(),
                     "message": "User created",
                 },
                 status=200,
@@ -128,10 +99,10 @@ def update_user(request, id):
 
             user.save()
 
-            print("#####" + str(user))
+            user_data = user.serialize()
 
             return JsonResponse(
-                {"success": True, "data": user.serialize(), "message": "User updated"},
+                {"success": True, "data": user_data, "message": "User updated"},
                 status=200,
             )
 

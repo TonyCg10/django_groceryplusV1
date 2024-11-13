@@ -8,62 +8,27 @@ from groceryplusv1.models.product_model import Product
 @csrf_exempt
 def get_products(request):
     try:
-        products = Product.objects.all()
-        data = [product.to_json() for product in products]
+        filters = {}
 
-        print("#####" + str(data))
+        for key, value in request.GET.items():
+            filters[key] = value
 
-        return JsonResponse(
-            {"success": True, "products": data, "message": "Products gotten"},
-            status=200,
-        )
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
+        if filters:
+            products = Product.objects.filter(**filters)
+        else:
+            products = Product.objects.all()
 
-
-@csrf_exempt
-def get_one_product(request, id):
-    try:
-        product = Product.objects.get(_id=id)
-
-        print("#####" + str(product))
-
-        return JsonResponse(
-            {
-                "success": True,
-                "product": product.to_json(),
-                "message": "Product gotten",
-            },
-            status=200,
-        )
-
-    except Product.DoesNotExist:
-        return JsonResponse(
-            {"success": False, "error": "Product not found"}, status=404
-        )
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-
-@csrf_exempt
-def get_multiple_product(request, ids):
-    try:
-        product_ids = ids.split(",")
-        products = Product.objects.filter(_id__in=product_ids)
-
-        print(len(products))
+        data = [product.serialize() for product in products]
 
         if products:
             return JsonResponse(
-                {"exists": True, "data": products, "message": "Products exist"},
+                {"success": True, "products": data, "message": "Products gotten"},
                 status=200,
             )
-
         else:
             return JsonResponse(
                 {"success": False, "error": "Products not found"}, status=404
             )
-
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
@@ -106,7 +71,7 @@ def create_product(request):
             return JsonResponse(
                 {
                     "success": True,
-                    "data": new_product.to_json(),
+                    "product": new_product.serialize(),
                     "message": "Product created",
                 },
                 status=200,

@@ -2,6 +2,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import mongoengine
+import certifi
 
 load_dotenv()
 
@@ -10,9 +11,10 @@ MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
 MONGODB_URL = os.getenv("MONGODB_URL")
 
 mongoengine.connect(
-    db="GroceryPlus",
-    host=f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_URL}",
+    db="GroceryPlusV1",
+    host=f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_URL}/",
     port=8000,
+    tlsCAFile=certifi.where(),
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent

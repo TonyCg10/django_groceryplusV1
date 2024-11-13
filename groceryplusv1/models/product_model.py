@@ -14,7 +14,7 @@ class Product(Document):
     thumbnail = StringField()
     title = StringField()
 
-    def to_json(self):
+    def serialize(self):
         return {
             "_id": self._id,
             "brand": self.brand,
