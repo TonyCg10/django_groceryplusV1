@@ -11,9 +11,8 @@ MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
 MONGODB_URL = os.getenv("MONGODB_URL")
 
 mongoengine.connect(
-    db="GroceryPlusV1",
+    db="GroceryPlus",
     host=f"mongodb+srv://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_URL}/",
-    port=8000,
     tlsCAFile=certifi.where(),
 )
 
@@ -94,11 +93,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-MIGRATION_MODULES = {
-    "auth": None,
-    "contenttypes": None,
-}
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
