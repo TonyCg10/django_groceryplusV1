@@ -11,12 +11,12 @@ urlpatterns = [
         "products/create-product", product_views.create_product, name="create_product"
     ),
     path(
-        "products/update-product/<str:id>",
+        "products/update-product/<str:product_id>",
         product_views.update_product,
         name="update_product",
     ),
     path(
-        "products/delete-product/<str:id>",
+        "products/delete-product/<str:product_id>",
         product_views.delete_product,
         name="delete_product",
     ),

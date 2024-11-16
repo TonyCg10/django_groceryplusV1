@@ -18,9 +18,9 @@ mongoengine.connect(
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-key")
-
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY is not set in the environment!")
 
 ALLOWED_HOSTS = ["127.0.0.1", "10.0.0.139"]
 
