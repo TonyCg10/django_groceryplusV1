@@ -64,7 +64,7 @@ def get_users(request):
 
     except Exception as e:
         print("===== Error Log =====")
-        print("Error:", str(e))
+        print("Error:", e)
         print("======================")
 
         return JsonResponse({"success": False, "error": str(e)}, status=500)
@@ -94,56 +94,55 @@ def create_user(request):
         print("Body:", request.body.decode("utf-8"))
         print("========================")
 
-        if request.method == "POST":
-            data = json.loads(request.body)
-
-            new_user_id = str(ObjectId())
-            name = data.get("name")
-            email = data.get("email")
-            password = data.get("password")
-            phone = data.get("phone")
-            stripe_customer_id = data.get("stripeCustomerId")
-            img = data.get("img")
-
-            if not name or not email or not password or not phone:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Missing required fields: name, email, password, or phone",
-                    },
-                    status=400,
-                )
-
-            new_user = User(
-                _id=new_user_id,
-                name=name,
-                email=email,
-                password=password,
-                phone=phone,
-                img=img,
-                stripeCustomerId=stripe_customer_id,
-            )
-            new_user.save()
-
-            print("===== User Created Log =====")
-            print("User:", new_user.serialize())
-            print("=============================")
-
-            return JsonResponse(
-                {
-                    "success": True,
-                    "user": new_user.serialize(),
-                    "message": "User created",
-                },
-                status=200,
-            )
-        else:
+        if request.method != "POST":
             return JsonResponse(
                 {"success": False, "error": "Invalid request method"}, status=400
             )
+        data = json.loads(request.body)
+
+        new_user_id = str(ObjectId())
+        name = data.get("name")
+        email = data.get("email")
+        password = data.get("password")
+        phone = data.get("phone")
+        stripe_customer_id = data.get("stripeCustomerId")
+        img = data.get("img")
+
+        if not name or not email or not password or not phone:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Missing required fields: name, email, password, or phone",
+                },
+                status=400,
+            )
+
+        new_user = User(
+            _id=new_user_id,
+            name=name,
+            email=email,
+            password=password,
+            phone=phone,
+            img=img,
+            stripeCustomerId=stripe_customer_id,
+        )
+        new_user.save()
+
+        print("===== User Created Log =====")
+        print("User:", new_user.serialize())
+        print("=============================")
+
+        return JsonResponse(
+            {
+                "success": True,
+                "user": new_user.serialize(),
+                "message": "User created",
+            },
+            status=200,
+        )
     except Exception as e:
         print("===== Error Log =====")
-        print("Error:", str(e))
+        print("Error:", e)
         print("======================")
 
         return JsonResponse({"success": False, "error": str(e)}, status=500)
@@ -183,9 +182,7 @@ def update_user(request, user_id):
                 )
 
             update_fields = json.loads(request.body)
-            new_image = request.FILES.get("img")
-
-            if new_image:
+            if new_image := request.FILES.get("img"):
                 update_fields["img"] = new_image
 
             for key, value in update_fields.items():
@@ -218,7 +215,7 @@ def update_user(request, user_id):
 
     except Exception as e:
         print("===== Error Log =====")
-        print(f"Error: {str(e)}")
+        print("Error:", e)
         print("=====================")
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
@@ -268,6 +265,6 @@ def delete_user(request, user_id):
 
     except Exception as e:
         print("===== Error Log =====")
-        print(f"Error: {str(e)}")
+        print("Error:", e)
         print("=====================")
         return JsonResponse({"success": False, "error": str(e)}, status=500)

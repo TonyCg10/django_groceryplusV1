@@ -33,7 +33,7 @@ class User(Document):
             "email": self.email,
             "password": self.password,
             "phone": self.phone,
-            "img": self.img if self.img else None,
+            "img": self.img or None,
             "stripeCustomerId": self.stripeCustomerId,
         }
 
